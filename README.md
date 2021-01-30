@@ -1,12 +1,17 @@
 # Goals
 
 ## Business Goals
-For our project we determined three overarching business goals that we would focus on, which we will then expand upon in the analytics goals and general model. Firstly, our central business goal and the overarching goal of the project is to **maximize yearly profit** (via optimization) for a specific listing on Airbnb. All other goals are aimed either at modifying this central goal or constraining it to make our final solution more viable.
+For our project we determined three overarching business goals that we would focus on, which we will then expand upon in the analytics goals and general model. 
+
+Firstly, our central business goal and the overarching goal of the project is to **maximize yearly profit** (via optimization) for a specific listing on Airbnb. All other goals are aimed either at modifying this central goal or constraining it to make our final solution more viable.
+
 Our second business goal is to **create a dynamic pricing tool** that determines a daily price competitive with other localized Airbnb listings. By determining price at the scale of the smallest possible rental period (daily) we wanted to create a model that was as flexible as possible. This means that our optimization model could be specified down to the specific days that a user would/would not expect to be renting their listing, hopefully further increasing the validity of our end result.
+
 Our third main business goal is to **create an easily repeatable design process** for expansion to other locations. Because our current model has a narrow scope in terms of location, we wanted to be certain that as we constructed our model, our design and the choices we made could be easily replicated in the future so that this model could be adapted to have a more universal utility.
 
 ## Analytics Goals
 Once we had established our business goals, and what we wanted to accomplish in this project, we then created 3 main analytics goals in order to determine how we wanted to meet our goals. Our first analytics goal is to find the **function of demand** in terms of price via k-means clustering. In building our model, we needed a way to effectively project demand given a set of predetermined parameters; therefore, we chose to use k-means clustering on listings from identical neighborhoods with similar attributes. This ensured that the clusters were from properties as similar as possible, so that the differences in attributes were the only things affecting rentals and we could determine their individual influences on our demand variable.
+
 Our second analytics goal is to **predict the intrinsic value** of a property by running a kNN regression using attributes of that property. Similar to the previous goal, we wanted to ensure our  valuation of properties was as accurate as possible, so by using kNN on the many variables presented in the Airbnb dataset (number of beds, amenities, etc.), we knew that the classes we were creating within our regression ensured that any factors not included in our model would have a minimal effect, as they would be adequately described by the NN algorithm.
 Our third analytics goal is to calculate the optimal daily price through an optimization model of yearly profit. This goal describes our main business goal in more concrete analytical terms. Once we knew we would be using an optimization model, we could structure our analysis around the component pieces necessary; a modeled demand variable, intrinsic amenities’ additive values for properties, and valuation of costs vs. revenues. By framing our problem as a typical revenue - cost optimization, we could outline our general structure and begin to create the pieces necessary for our final model.
 
@@ -57,8 +62,8 @@ We model the competitor factor by using the same approach that we initially plan
 ## Formulate Demand Function of “Competition” Group
 
 For each cluster, we have a set of data with the X-variable being the listing price and the Y-variable being the demand represented by the occupancy rate. From this we will fit either a  linear or polynomial regression model onto this dataset to find the best-fitted function of demand  
-$D_{xij} = \alpha* x_{ij}^2 + *x_{ij} + \beta$.  
-We then put this demand function into the optimization model. The objective is to maximize profit in one year, so the formula to calculate profit for each day is the listing price on that day multiplied by the demand function on that day, represented as $D_{xij} * x_{xij}$. It is worth noting that at this point in the analysis, demand in our dataset is the occupancy rate, which represents the probability a property is booked on a given day. We will mention the details of how to calculate the optimal yearly profit in the Decision Model later. 
+$$D_{xij} = \alpha* x_{ij}^2 + *x_{ij} + \beta$$.  
+We then put this demand function into the optimization model. The objective is to maximize profit in one year, so the formula to calculate profit for each day is the listing price on that day multiplied by the demand function on that day, represented as $$D_{xij} * x_{xij}$$. It is worth noting that at this point in the analysis, demand in our dataset is the occupancy rate, which represents the probability a property is booked on a given day. We will mention the details of how to calculate the optimal yearly profit in the Decision Model later. 
 	After several trials, we determined that the relationship between demand and price is not always inversely correlated together and straightforward linear; outlier-type cases in particular don’t fit into our model, meaning that extremely expensive listings seem to have different rules of demand governing them, which is reasonable but not accounted for in our limited model. 
 ![alt text](https://user-images.githubusercontent.com/30711638/48396056-2eb13780-e6e7-11e8-8c02-1a989dca7e46.png)
 
@@ -75,6 +80,7 @@ In attempting to find the daily optimal price, we determined that our optimizati
 ### Decision Variables:
 - ij: binary variable which is 1 if customers decide to book Airbnb property on day j of month i, equal to 0 otherwise
 - $$x_{ij}$$: price of Airbnb property on day j of month i
+
 Parameters:
 - $$C_V$$ is variable cost that includes cleaning fee, utilities, guest-included fee, deterioration fee on amenities. For simplicity of our model, we will let users independently input $$C_V$$ to the application, allowing us to treat $$C_V$$ as a constant. Moreover, we assume $$C_V$$ will be incurred only on the days where bookings happened.  
 - $$I_O$$ is initial investment the property owner supplies, which potentially includes the real estate or reimbursement costs, amenity purchases, maintenance cost or any other upfront cost. For simplicity of our model, we will let users input the estimate initial investment on their property, allowing us to treat this as a fixed cost throughout our model.  
